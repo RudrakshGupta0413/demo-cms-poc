@@ -1,0 +1,36 @@
+.change-layout-container {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--theme-elevation-100, #f8f8f8);
+  border: 1px solid var(--theme-elevation-200, #eee);
+  border-radius: 8px;
+  gap: 1rem;
+}
+
+.change-layout-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.change-layout-label {
+  font-size: 0.85rem;
+  color: var(--theme-elevation-500, #666);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.change-layout-value {
+  font-size: 1.1rem;
+  color: var(--theme-elevation-800, #000);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.change-layout-action button {
+  white-space: nowrap;
+}
