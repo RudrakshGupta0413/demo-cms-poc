@@ -12,22 +12,69 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
     const { data } = useLivePreview({
         initialData: initialPage,
         serverURL: ADMIN_ORIGIN,
-        depth: 2,
+        depth: 3,
     })
 
-    const { hero, step1, step2, step3, step4, discoverMore } = data || {}
+    console.log('LivePreviewProcess Debug:', { initialPage, data })
+
+    let { hero, step1, step2, step3, step4, discoverMore } = data || {}
+
+    // Fallback for hero image if it's missing URL (unpopulated ID)
+    if (hero?.backgroundImage && !hero.backgroundImage.url) {
+        const initialImage = initialPage?.hero?.backgroundImage
+        if (initialImage?.id && (hero.backgroundImage === initialImage.id || hero.backgroundImage?.id === initialImage.id)) {
+            hero = {
+                ...hero,
+                backgroundImage: initialImage,
+            }
+        }
+    }
     const steps = [
         { data: step1, path: 'step1' },
         { data: step2, path: 'step2' },
         { data: step3, path: 'step3' },
         { data: step4, path: 'step4' },
-    ].filter(s => !!s.data?.image)
+    ].map((s) => {
+        // preserve image if it lacks URL (unpopulated ID)
+        if (s.data?.image && !s.data.image.url) {
+            const initialStep = initialPage?.[s.path]
+            const initialImage = initialStep?.image
+            // Check if IDs match (loose equality for string/number)
+            if (initialImage?.id && (s.data.image === initialImage.id || s.data.image?.id === initialImage.id)) {
+                return {
+                    ...s,
+                    data: {
+                        ...s.data,
+                        image: initialImage,
+                    },
+                }
+            }
+        }
+        return s
+    }).filter(s => !!s.data?.image)
 
     const discoverItems = [
         { data: discoverMore?.item1, path: 'discoverMore.item1' },
         { data: discoverMore?.item2, path: 'discoverMore.item2' },
         { data: discoverMore?.item3, path: 'discoverMore.item3' },
-    ].filter(i => !!i.data?.image)
+    ].map((i) => {
+        // preserve image if it lacks URL (unpopulated ID)
+        if (i.data?.image && !i.data.image.url) {
+            const initialItem = initialPage?.discoverMore?.[i.path.split('.')[1]] // e.g. item1
+            const initialImage = initialItem?.image
+            // Check if IDs match (loose equality for string/number)
+            if (initialImage?.id && (i.data.image === initialImage.id || i.data.image?.id === initialImage.id)) {
+                return {
+                    ...i,
+                    data: {
+                        ...i.data,
+                        image: initialImage,
+                    },
+                }
+            }
+        }
+        return i
+    }).filter(i => !!i.data?.image)
 
     return (
         <main className="process-main">
@@ -40,6 +87,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                             alt={hero.backgroundImage.alt || 'Hero'}
                             fill
                             className="process-hero-bg-image"
+                            priority
                         />
                     </div>
                 )}
@@ -52,6 +100,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                             docID={String(data.id)}
                             fieldPath="hero.heading"
                             adminOrigin={ADMIN_ORIGIN}
+                            tagName="span"
                         >
                             {hero?.heading || 'Process of Dyeing'}
                         </Editable>
@@ -63,6 +112,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                                 docID={String(data.id)}
                                 fieldPath="hero.subheading"
                                 adminOrigin={ADMIN_ORIGIN}
+                                tagName="span"
                             >
                                 {hero?.subheading}
                             </Editable>
@@ -85,6 +135,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                                         docID={String(data.id)}
                                         fieldPath={`${fieldPath}.heading`}
                                         adminOrigin={ADMIN_ORIGIN}
+                                        tagName="span"
                                     >
                                         {step.heading}
                                     </Editable>
@@ -95,6 +146,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                                         docID={String(data.id)}
                                         fieldPath={`${fieldPath}.description`}
                                         adminOrigin={ADMIN_ORIGIN}
+                                        tagName="span"
                                     >
                                         {step.description}
                                     </Editable>
@@ -133,6 +185,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                             docID={String(data.id)}
                             fieldPath="discoverMore.heading"
                             adminOrigin={ADMIN_ORIGIN}
+                            tagName="span"
                         >
                             {discoverMore.heading || 'Discover more'}
                         </Editable>
@@ -168,6 +221,7 @@ export function LivePreviewProcessOfDyeing({ initialPage }: any) {
                                             docID={String(data.id)}
                                             fieldPath={`${fieldPath}.heading`}
                                             adminOrigin={ADMIN_ORIGIN}
+                                            tagName="span"
                                         >
                                             {item.heading}
                                         </Editable>

@@ -13,16 +13,47 @@ export function LivePreviewBlog({ initialPage }: any) {
     const { data } = useLivePreview({
         initialData: initialPage,
         serverURL: ADMIN_ORIGIN,
-        depth: 2,
+        depth: 3,
     })
 
-    const { hero, section1, section2, section3, section4 } = data || {}
+    console.log('LivePreviewBlog Debug:', { initialPage, data })
+
+    let { hero, section1, section2, section3, section4 } = data || {}
+
+    // Fallback for hero image if it's missing URL (unpopulated ID)
+    if (hero?.backgroundImage && !hero.backgroundImage.url) {
+        const initialImage = initialPage?.hero?.backgroundImage
+        if (initialImage?.id && (hero.backgroundImage === initialImage.id || hero.backgroundImage?.id === initialImage.id)) {
+            hero = {
+                ...hero,
+                backgroundImage: initialImage,
+            }
+        }
+    }
+
     const sections = [
         { data: section1, path: 'section1' },
         { data: section2, path: 'section2' },
         { data: section3, path: 'section3' },
         { data: section4, path: 'section4' },
-    ].filter(s => !!s.data?.image)
+    ].map((s) => {
+        // preserve image if it lacks URL (unpopulated ID)
+        if (s.data?.image && !s.data.image.url) {
+            const initialSection = initialPage?.[s.path]
+            const initialImage = initialSection?.image
+            // Check if IDs match (loose equality for string/number)
+            if (initialImage?.id && (s.data.image === initialImage.id || s.data.image?.id === initialImage.id)) {
+                return {
+                    ...s,
+                    data: {
+                        ...s.data,
+                        image: initialImage,
+                    },
+                }
+            }
+        }
+        return s
+    }).filter(s => !!s.data?.image)
 
     return (
         <main className="blog-main">
@@ -81,6 +112,7 @@ export function LivePreviewBlog({ initialPage }: any) {
                                                 docID={String(data.id)}
                                                 fieldPath={`${fieldPath}.heading`}
                                                 adminOrigin={ADMIN_ORIGIN}
+                                                tagName="span"
                                             >
                                                 {section.heading}
                                             </Editable>

@@ -17,7 +17,8 @@ export function Editable({
     fieldPath,
     adminOrigin,
     children,
-}: EditableProps) {
+    tagName: Tag = 'div' as any,
+}: EditableProps & { tagName?: any }) {
     const [isPreviewActive, setIsPreviewActive] = useState(false)
 
     useEffect(() => {
@@ -29,9 +30,9 @@ export function Editable({
     if (!isPreviewActive) return <>{children}</>
 
     return (
-        <div
+        <Tag
             data-editable-preview
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
                 e.preventDefault()
                 e.stopPropagation()
                 postFocusToPayloadAdmin(
@@ -45,19 +46,21 @@ export function Editable({
                 outline: '1px solid transparent',
                 outlineOffset: '2px',
                 transition: 'outline-color 0.15s ease',
-                display: 'block',
+                display: Tag === 'span' ? 'inline-block' : 'block',
                 position: 'relative',
+                width: '100%',
+                height: '100%',
                 zIndex: 1,
             }}
             title="Click to focus this field in the admin"
-            onMouseEnter={(e) => {
+            onMouseEnter={(e: React.MouseEvent<HTMLElement>) => {
                 e.currentTarget.style.outlineColor = 'var(--editable-outline, rgba(55, 201, 176, 0.5))'
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={(e: React.MouseEvent<HTMLElement>) => {
                 e.currentTarget.style.outlineColor = 'transparent'
             }}
         >
             {children}
-        </div>
+        </Tag>
     )
 }
