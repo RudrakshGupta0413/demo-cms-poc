@@ -32,7 +32,7 @@ A modern, high-fidelity Content Management System built with **Next.js 15** and 
     ```bash
     DATABASE_URI=postgres://...
     PAYLOAD_SECRET=...
-    NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN=http://localhost:3000
+    NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN=http://localhost:3005
     ```
 
 3.  **Run Development Server:**
@@ -41,8 +41,8 @@ A modern, high-fidelity Content Management System built with **Next.js 15** and 
     npm run dev
     ```
 
-    - Frontend: [http://localhost:3000](http://localhost:3000)
-    - Admin Panel: [http://localhost:3000/admin](http://localhost:3000/admin)
+    - Frontend: [http://localhost:3005](http://localhost:3005)
+    - Admin Panel: [http://localhost:3005/admin](http://localhost:3005/admin)
 
 ## Project Structure
 
