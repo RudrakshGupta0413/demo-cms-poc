@@ -4,6 +4,7 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -45,5 +46,22 @@ export default buildConfig({
         outputFile: path.resolve(dirname, 'payload-types.ts'),
     },
     sharp,
-    plugins: [],
+    plugins: [
+        formBuilderPlugin({
+            fields: {
+                payment: false,
+            },
+            formOverrides: {
+                admin: {
+                    group: 'Config',
+                },
+            },
+            formSubmissionOverrides: {
+                admin: {
+                    group: 'Config',
+                },
+            },
+        }),
+    ],
 })
+
