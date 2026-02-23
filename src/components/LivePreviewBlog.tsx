@@ -7,7 +7,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { useLivePreview } from '@payloadcms/live-preview-react'
 import '../styles/LivePreviewBlog.css'
 
-const ADMIN_ORIGIN = process.env.NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN ?? 'http://localhost:3005'
+const ADMIN_ORIGIN = process.env.NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN ?? 'http://localhost:3010'
 
 export function LivePreviewBlog({ initialPage }: any) {
     const { data } = useLivePreview({

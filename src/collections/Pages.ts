@@ -48,7 +48,7 @@ export const Pages: CollectionConfig = {
         defaultColumns: ['title', 'slug', 'layoutType'],
         livePreview: {
             url: ({ data }) => {
-                const origin = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3005'
+                const origin = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3010'
                 return `${origin}/${data?.slug}?livePreview=true`
             },
         },

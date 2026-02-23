@@ -6,7 +6,7 @@ import { Editable } from '@/components/Editable'
 import { useLivePreview } from '@payloadcms/live-preview-react'
 import '../styles/LivePreviewProcessOfDyeing.css'
 
-const ADMIN_ORIGIN = process.env.NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN ?? 'http://localhost:3005'
+const ADMIN_ORIGIN = process.env.NEXT_PUBLIC_PAYLOAD_ADMIN_ORIGIN ?? 'http://localhost:3010'
 
 export function LivePreviewProcessOfDyeing({ initialPage }: any) {
     const { data } = useLivePreview({
