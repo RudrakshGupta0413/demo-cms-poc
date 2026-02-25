@@ -60,8 +60,66 @@ export default buildConfig({
                 admin: {
                     group: 'Config',
                 },
+                hooks: {
+                    afterChange: [
+                        async ({ doc, operation }) => {
+                            if (operation === 'create') {
+                                try {
+                                    console.log('--- Form Submission Hook Triggered ---')
+                                    console.log('Form ID:', doc.form)
+
+                                    // Extract data from Payload's submissionData array robustly
+                                    let jsonPayload: any = {}
+
+                                    if (doc.submissionData && Array.isArray(doc.submissionData)) {
+                                        doc.submissionData.forEach((item: any) => {
+                                            const lowerField = (item.field || '').toLowerCase()
+                                            const val = item.value || ''
+
+                                            if (lowerField.includes('email')) {
+                                                jsonPayload.email = val
+                                            } else if (lowerField.includes('name') || lowerField.includes('first')) {
+                                                jsonPayload.name = val
+                                            } else if (lowerField.includes('phone')) {
+                                                jsonPayload.phone = val
+                                            } else {
+                                                jsonPayload[item.field] = val
+                                            }
+                                        })
+                                    }
+
+                                    const synergyPayload = {
+                                        workflow: "synergy",
+                                        action: "waitlist",
+                                        JSON_PAYLOAD: jsonPayload
+                                    }
+
+                                    console.log('Extracted final apiPayload:', synergyPayload)
+
+                                    const response = await fetch('https://papi.misrut.com/papi/opn/synergy/waitlist', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json'
+                                        },
+                                        body: JSON.stringify(synergyPayload)
+                                    })
+
+                                    if (!response.ok) {
+                                        const errorBody = await response.text()
+                                        console.error('Synergy API returned an error:', response.status, errorBody)
+                                    } else {
+                                        console.log('Successfully submitted to Synergy Waitlist via Backend Hook.')
+                                    }
+                                } catch (error) {
+                                    console.error('Failed to submit to Synergy Waitlist API from hook:', error)
+                                }
+                            }
+                            return doc
+                        }
+                    ]
+                }
             },
         }),
     ],
 })
-
