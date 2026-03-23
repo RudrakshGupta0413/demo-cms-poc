@@ -5,16 +5,24 @@ import config from '@/payload.config'
 
 export const Header = async () => {
     const payload = await getPayload({ config })
-    const pagesResult = await payload.find({
-        collection: 'pages',
-        limit: 100,
-        select: {
-            title: true,
-            slug: true,
-        }
-    })
 
-    const pages = pagesResult.docs
+    // Get nav items from the Header global
+    const headerGlobal = await payload.findGlobal({ slug: 'header' })
+    const navItems = (headerGlobal as any)?.navItems || []
+
+    // Build pages list from global nav items only
+    const pages = navItems
+        .filter((item: any) => item.page)
+        .map((item: any) => {
+            const page = typeof item.page === 'object' ? item.page : null
+            if (!page) return null
+            return {
+                id: page.id,
+                title: item.label || page.title,
+                slug: page.slug,
+            }
+        })
+        .filter(Boolean)
 
     return (
         <header style={{
@@ -38,7 +46,7 @@ export const Header = async () => {
             </Link>
 
             <nav style={{ display: 'flex', gap: 35, alignItems: 'center', justifyContent: 'flex-end' }}>
-                {pages.map((page) => (
+                {pages.map((page: any) => (
                     <Link
                         key={page.id}
                         href={`/${page.slug}`}

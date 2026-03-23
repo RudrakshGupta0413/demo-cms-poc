@@ -93,8 +93,14 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    header: Header;
+    footer: Footer;
+  };
+  globalsSelect: {
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -177,6 +183,10 @@ export interface Page {
    * URL slug (e.g. "my-page").
    */
   slug?: string | null;
+  /**
+   * Toggle to show/hide this page in the global header navigation
+   */
+  showInHeader?: boolean | null;
   hero?: {
     heading: string;
     subheading?: string | null;
@@ -295,6 +305,14 @@ export interface Page {
       heading: string;
       link?: string | null;
     };
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
   };
   updatedAt: string;
   createdAt: string;
@@ -624,6 +642,7 @@ export interface PagesSelect<T extends boolean = true> {
   layoutType?: T;
   title?: T;
   slug?: T;
+  showInHeader?: T;
   hero?:
     | T
     | {
@@ -712,6 +731,13 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               link?: T;
             };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -904,6 +930,132 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  /**
+   * Select which pages to show in the header navigation and their order.
+   */
+  navItems?:
+    | {
+        page: number | Page;
+        /**
+         * Leave blank to use the page title
+         */
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  logo?: {
+    text?: string | null;
+    tagline?: string | null;
+  };
+  quickLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  companyLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  helpLinks?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  enquiryText?: string | null;
+  copyrightText?: string | null;
+  socialLinks?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    twitter?: string | null;
+    youtube?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  navItems?:
+    | T
+    | {
+        page?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        text?: T;
+        tagline?: T;
+      };
+  quickLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  companyLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  helpLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  enquiryText?: T;
+  copyrightText?: T;
+  socialLinks?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        twitter?: T;
+        youtube?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -5,9 +5,12 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
+import { Header } from './globals/Header'
+import { Footer } from './globals/Footer'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -41,6 +44,7 @@ export default buildConfig({
         },
     }),
     collections: [Users, Media, Pages],
+    globals: [Header, Footer],
     secret: process.env.PAYLOAD_SECRET || 'SETUP_YOUR_SECRET',
     typescript: {
         outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -120,6 +124,12 @@ export default buildConfig({
                     ]
                 }
             },
+        }),
+        seoPlugin({
+            collections: ['pages'],
+            uploadsCollection: 'media',
+            generateTitle: ({ doc }: any) => doc?.title ? `${doc.title} — Desi` : 'Desi',
+            generateDescription: ({ doc }: any) => doc?.hero?.subheading || '',
         }),
     ],
 })

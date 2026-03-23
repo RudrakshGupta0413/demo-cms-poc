@@ -3,6 +3,7 @@ import { LivePreviewProcessOfDyeing } from '@/components/LivePreviewProcessOfDye
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
 interface PageProps {
     params: Promise<{
@@ -10,10 +11,8 @@ interface PageProps {
     }>
 }
 
-export default async function Page({ params }: PageProps) {
-    const { slug } = await params
+async function getPage(slug: string) {
     const payload = await getPayload({ config })
-
     const result = await payload.find({
         collection: 'pages',
         where: {
@@ -23,8 +22,34 @@ export default async function Page({ params }: PageProps) {
         },
         depth: 2,
     })
+    return result?.docs?.[0] || null
+}
 
-    const page = result?.docs?.[0]
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { slug } = await params
+    const page = await getPage(slug) as any
+
+    if (!page) return {}
+
+    const meta = page?.meta || {}
+    const metaImage = meta.image as any
+
+    return {
+        title: meta.title || page.title || '',
+        description: meta.description || '',
+        openGraph: {
+            title: meta.title || page.title || '',
+            description: meta.description || '',
+            ...(metaImage?.url && {
+                images: [{ url: metaImage.url }],
+            }),
+        },
+    }
+}
+
+export default async function Page({ params }: PageProps) {
+    const { slug } = await params
+    const page = await getPage(slug)
 
     if (!page) {
         return notFound()

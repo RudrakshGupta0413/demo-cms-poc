@@ -14,6 +14,9 @@ export default function Page() {
                 <Link href="/blog/my-blog" style={{ padding: '10px 20px', border: '1px solid #333', color: '#333', textDecoration: 'none', borderRadius: 4 }}>
                     Blog
                 </Link>
+                <Link href="/menu" style={{ padding: '10px 20px', background: '#FFD814', color: '#0F1111', textDecoration: 'none', borderRadius: 4, fontWeight: 'bold' }}>
+                    🍔 New Order Flow (Amazon Style)
+                </Link>
             </div>
         </main>
     )

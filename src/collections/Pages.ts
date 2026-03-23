@@ -111,6 +111,16 @@ export const Pages: CollectionConfig = {
                 condition: (data) => !!data?.layoutType,
             },
         },
+        {
+            name: 'showInHeader',
+            type: 'checkbox',
+            label: 'Show in Header Navigation',
+            defaultValue: true,
+            admin: {
+                description: 'Toggle to show/hide this page in the global header navigation',
+                position: 'sidebar',
+            },
+        },
         // COMMON HERO
         {
             name: 'hero',

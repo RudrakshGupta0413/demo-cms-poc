@@ -1,6 +1,8 @@
 import * as React from 'react'
 import '../(payload)/custom.css'
 import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
+import { CartProvider } from '@/components/CartContext'
 
 export const metadata = {
     title: 'Desi CMS',
@@ -15,10 +17,12 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body style={{ margin: 0 }}>
-                <Header />
-                {children}
+                <CartProvider>
+                    <Header />
+                    {children}
+                    <Footer />
+                </CartProvider>
             </body>
         </html>
     )
 }
-
